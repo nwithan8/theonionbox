@@ -22,7 +22,7 @@ var translate_onionoo_to_history = {
     'y1': 'y1',
     'm6': 'm6',
     'm3': 'Ch',
-    'm1': '4h'
+    'm1': '24h'
 };
 
 var history_glide_js = null;

@@ -15,7 +15,7 @@ from .proxy import Proxy
 py = sys.version_info
 py30 = py >= (3, 0, 0)
 
-__supported_protocol__ = ['6.2', '7.0']
+__supported_protocol__ = ['6.2', '7.0', '7.1', '8.0']
 
 
 class Mode(object):
@@ -23,9 +23,11 @@ class Mode(object):
     TOR = 1
     HIDDEN = 2
 
+
 class TorType(object):
     RELAY = 0
     BRIDGE = 1
+
 
 ONIONOO_OPEN = 'https://onionoo.torproject.org'
 # ONIONOO_HIDDEN = ['http://onionoorcazzotwa.onion', 'http://tgel7v4rpcllsrk2.onion']
@@ -111,19 +113,17 @@ ONIONOO_HIDDEN = ['http://tgel7v4rpcllsrk2.onion']
 
 
 class Document(object):
-
-    history_object_keys = ['5_years', '1_year', '6_months', '3_months', '1_month', '1_week', '3_days']
-    # result_object_keys = ['y5', 'y1', 'm3', 'm1', 'w1', 'd3']
+    history_object_keys = ['5_years', '1_year', '6_months', '3_months', '1_month', '3_days']
+    # result_object_keys = ['y5', 'y1', 'm3', 'm1', 'd3']
 
     result_object_keys = {'5_years': 'y5',
                           '1_year': 'y1',
                           '6_months': 'm6',
                           '3_months': 'm3',
                           '1_month': 'm1',
-                          '1_week': 'w1',
                           '3_days': 'd3'}
 
-    none_value = -10    # '-10' to distinguish None from 0 (zero)
+    none_value = -10  # '-10' to distinguish None from 0 (zero)
 
     cache = {}
     ifModSince = ''
@@ -150,7 +150,7 @@ class Document(object):
         v = self.version()
         if v not in __supported_protocol__:
             self.log.warning("Onionoo protocol version mismatch! Received: {} / Prepared for: {}."
-                     .format(v, __supported_protocol__))
+                             .format(v, __supported_protocol__))
             # self.update(None)
             # return
 
@@ -261,7 +261,7 @@ class Document(object):
             ts_now = time()
             # check if ts is in ms?
             base = floor(log10(ts)) - floor(log10(ts_now))
-            utc_timestruct = gmtime(ts / (10**base))
+            utc_timestruct = gmtime(ts / (10 ** base))
         else:
             # if it's neither an int nor a string, this will raise!
             utc_timestruct = strptime(ts, '%Y-%m-%d %H:%M:%S')
@@ -329,7 +329,6 @@ class Document(object):
 
 
 class DocumentInterface(object):
-
     _document = None
 
     def __init__(self, document):
@@ -350,8 +349,8 @@ class DocumentInterface(object):
     def is_unknown(self):
         return self._document.is_unknown()
 
-class Details(DocumentInterface):
 
+class Details(DocumentInterface):
     # onionoo protocol v7.0
     relay_detail = {
         'nickname': 'Unnamed',
@@ -387,6 +386,7 @@ class Details(DocumentInterface):
         'exit_policy_summary': None,
         'exit_policy_v6_summary': None,
         'contact': None,
+        # 'bridgedb_distributor': None,
         'platform': None,
         'version': None,
         'recommended_version': None,
@@ -433,6 +433,7 @@ class Details(DocumentInterface):
         # 'exit_policy_summary': None,
         # 'exit_policy_v6_summary': None,
         # 'contact': None,
+        'bridgedb_distributor': None,
         'platform': None,
         'version': None,
         'recommended_version': None,
@@ -477,6 +478,7 @@ class Details(DocumentInterface):
             retval = bytes(retval, 'utf-8').decode()
 
         return retval
+
 
 class Bandwidth(DocumentInterface):
 
@@ -525,6 +527,7 @@ class Weights(DocumentInterface):
         if self.has_data() is False:
             return None
         return self._document.get_chart('consensus_weight', period)
+
 
 # v5.x implementation
 
@@ -601,7 +604,7 @@ class OnionooManager():
                 'http': 'socks5h://' + proxy_address,
                 'https': 'socks5h://' + proxy_address
             }
-            query_base = ONIONOO_HIDDEN[randint(0,len(ONIONOO_HIDDEN) - 1)]
+            query_base = ONIONOO_HIDDEN[randint(0, len(ONIONOO_HIDDEN) - 1)]
 
         query_address = '{}/{}'.format(query_base, document.value)
 
@@ -649,7 +652,8 @@ class OnionooManager():
                 self.scheduler.add_job(self.query,
                                        trigger='interval', hours=2, jitter=3600,
                                        next_run_time=datetime.now(),  # to trigger once immediately!
-                                       kwargs={'update': self.documents[hash], 'document': d, 'fingerprint': fingerprint},
+                                       kwargs={'update': self.documents[hash], 'document': d,
+                                               'fingerprint': fingerprint},
                                        id=hash
                                        )
 
@@ -666,6 +670,7 @@ class OnionooManager():
 
 
 __ONIONOO__ = None
+
 
 def getOnionoo():
     global __ONIONOO__

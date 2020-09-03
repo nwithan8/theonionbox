@@ -15,16 +15,14 @@ var history_bandwidth = {};
 
 
 // from box.js:
-// history_chart_keys = ['y5', 'y1', 'm3', 'm1', 'w1', 'd3'];
+// history_chart_keys = ['y5', 'y1', 'm3', 'm1'];
 
 var translate_onionoo_to_history = {
     'y5': 'y5',
     'y1': 'y1',
     'm6': 'm6',
     'm3': 'Ch',
-    'm1': '4h',
-    'w1': '1h',
-    'd3': '5m'
+    'm1': '4h'
 };
 
 var history_glide_js = null;

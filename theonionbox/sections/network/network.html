@@ -68,6 +68,7 @@ fp = get('family_fp', None)
         {{!standard_row('Platform', oo_details('platform'))}}
         {{!standard_row('Contact Info', oo_details('contact'))}}
         {{!standard_row('OR Addresses', ' | '.join(oo_details('or_addresses')))}}
+        {{!standard_row('BridgeDB Distributor', oo_details('bridgedb_distributor'))}}
         {{!standard_row('First Seen', oo_details('first_seen'))}}
         {{!standard_row('Last Seen', oo_details('last_seen'))}}
         % if oo_details('last_restarted'):
